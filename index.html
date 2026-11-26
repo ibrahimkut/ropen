@@ -3,6 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <title>PLC Erişim Portalı</title>
   <style>
     * { box-sizing: border-box; font-family: Arial, sans-serif; }
@@ -63,16 +66,16 @@
     <h2>Sistem Girişi</h2>
     <p>Kullanıcı bilgilerinizle bağlı Raspberry Pi paneline geçin.</p>
 
-    <form id="loginForm">
+    <form id="loginForm" autocomplete="off">
       <label for="username">Kullanıcı Adı</label>
-      <input id="username" type="text" autocomplete="username" required>
+      <input id="username" name="user_access_field" type="text" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" required>
 
       <label for="password">Şifre</label>
-      <input id="password" type="password" autocomplete="current-password" required>
+      <input id="password" name="pass_access_field" type="password" autocomplete="new-password" required>
 
       <div id="adminSelectBox" class="hidden">
         <label for="rpiSelect">Raspberry Pi Seçimi</label>
-        <select id="rpiSelect">
+        <select id="rpiSelect" autocomplete="off">
           <option value="https://plc-2.taileb747a.ts.net">PLC-2 (https://plc-2.taileb747a.ts.net)</option>
           <option value="https://plc-3.taileb747a.ts.net">PLC-3 (https://plc-3.taileb747a.ts.net)</option>
         </select>
@@ -97,6 +100,12 @@
     const errMsg = document.getElementById("errMsg");
     const form = document.getElementById("loginForm");
 
+    window.addEventListener("pageshow", () => {
+      form.reset();
+      adminBox.classList.add("hidden");
+      errMsg.textContent = "";
+    });
+
     userInput.addEventListener("input", () => {
       if (userInput.value.trim().toLowerCase() === "admin") {
         adminBox.classList.remove("hidden");
@@ -119,6 +128,7 @@
       }
 
       const targetUrl = account.url ? account.url : rpiSelect.value;
+      form.reset();
       window.location.replace(targetUrl);
     });
   </script>
