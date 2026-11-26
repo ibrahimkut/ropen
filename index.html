@@ -2,13 +2,125 @@
 <html lang="tr">
 <head>
   <meta charset="utf-8">
-  <meta http-equiv="refresh" content="0; url=https://plc-2.taileb747a.ts.net">
-  <title>PLC Kontrol Paneli</title>
-  <script>
-    window.location.replace("https://plc-2.taileb747a.ts.net");
-  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLC Erişim Portalı</title>
+  <style>
+    * { box-sizing: border-box; font-family: Arial, sans-serif; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #0f172a;
+      color: #f8fafc;
+      padding: 16px;
+    }
+    .card {
+      width: 100%;
+      max-width: 380px;
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+    }
+    h2 { margin: 0 0 8px; font-size: 20px; }
+    p { margin: 0 0 20px; color: #94a3b8; font-size: 14px; }
+    label { display: block; font-size: 13px; margin-bottom: 6px; color: #cbd5e1; }
+    input, select, button {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #475569;
+      font-size: 15px;
+      margin-bottom: 14px;
+    }
+    input, select {
+      background: #0f172a;
+      color: #f8fafc;
+    }
+    button {
+      background: #2563eb;
+      color: #ffffff;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+      margin-bottom: 0;
+    }
+    button:hover { background: #1d4ed8; }
+    .err {
+      color: #f87171;
+      font-size: 13px;
+      margin-top: 10px;
+      min-height: 18px;
+    }
+    .hidden { display: none; }
+  </style>
 </head>
 <body>
-  <p>Panele yönlendiriliyorsunuz: <a href="https://plc-2.taileb747a.ts.net">https://plc-2.taileb747a.ts.net</a></p>
+  <div class="card">
+    <h2>Sistem Girişi</h2>
+    <p>Kullanıcı bilgilerinizle bağlı Raspberry Pi paneline geçin.</p>
+
+    <form id="loginForm">
+      <label for="username">Kullanıcı Adı</label>
+      <input id="username" type="text" autocomplete="username" required>
+
+      <label for="password">Şifre</label>
+      <input id="password" type="password" autocomplete="current-password" required>
+
+      <div id="adminSelectBox" class="hidden">
+        <label for="rpiSelect">Raspberry Pi Seçimi</label>
+        <select id="rpiSelect">
+          <option value="https://plc-2.taileb747a.ts.net">PLC-2 (https://plc-2.taileb747a.ts.net)</option>
+          <option value="https://plc-3.taileb747a.ts.net">PLC-3 (https://plc-3.taileb747a.ts.net)</option>
+        </select>
+      </div>
+
+      <button type="submit">Giriş Yap</button>
+      <div class="err" id="errMsg"></div>
+    </form>
+  </div>
+
+  <script>
+    const USERS = {
+      "musteri2": { pass: "1234", url: "https://plc-2.taileb747a.ts.net" },
+      "musteri3": { pass: "5678", url: "https://plc-3.taileb747a.ts.net" },
+      "admin":    { pass: "admin123", url: null }
+    };
+
+    const userInput = document.getElementById("username");
+    const passInput = document.getElementById("password");
+    const adminBox = document.getElementById("adminSelectBox");
+    const rpiSelect = document.getElementById("rpiSelect");
+    const errMsg = document.getElementById("errMsg");
+    const form = document.getElementById("loginForm");
+
+    userInput.addEventListener("input", () => {
+      if (userInput.value.trim().toLowerCase() === "admin") {
+        adminBox.classList.remove("hidden");
+      } else {
+        adminBox.classList.add("hidden");
+      }
+    });
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      errMsg.textContent = "";
+
+      const u = userInput.value.trim().toLowerCase();
+      const p = passInput.value;
+      const account = USERS[u];
+
+      if (!account || account.pass !== p) {
+        errMsg.textContent = "Kullanıcı adı veya şifre hatalı.";
+        return;
+      }
+
+      const targetUrl = account.url ? account.url : rpiSelect.value;
+      window.location.replace(targetUrl);
+    });
+  </script>
 </body>
 </html>
